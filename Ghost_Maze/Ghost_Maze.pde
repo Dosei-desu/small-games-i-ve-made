@@ -1,8 +1,14 @@
-//Labyrinth with field-of-view
+//Ghost Maze
+
+//Scoreboard:
+/*
+- zeroIndex - *45s* (normal mode / pre-portal update)
+- Dosei ----- *40s* (normal mode)
+*/
 
 //Updates:
 /*
-- Add pick-ups and portals.
+- Add pick-ups?
 */
 
 //Bugs:
@@ -10,6 +16,8 @@
 - Very rare bug where the enemies will be set to a speed of 0 
   or so close to 0 that they don't move. Have only encountered
   this once.
+- On nightmare mode, it is possible to get trapped in the spawn for
+  over a minute by the ghosts.
 */
 
 //Notes:
@@ -26,12 +34,14 @@
 - Score is based on how fast you can make it to the end, i.e. the lower
   the better.
 - There are roaming ghosts that will reset you if they touch you!
-- On nightmare mode, ghosts are doubled, and their speed is also doubled,
-  however, your timer only counts half as fast, making it possible to achieve
-  even faster times than on normal mode.
+- On nightmare mode, the number of ghosts are doubled, and their speed is also 
+  doubled, however, your timer only counts half as fast and your speed is doubled too, 
+  making it possible to achieve even faster times than on normal mode.
 - Theoretically, the lowest score possible is about 20-25s, my personal highscore 
-  is 54s.
+  is 40s (with portal), 54s (without portal).
 - You can see the eyes of the roaming ghosts and use it to your advantage!
+- There is a portal hidden somewhere on the level, which may give you an advantage!
+- Nightmare mode only gets turned off when you press R to reset the game.
 */
 
 //Controls:
@@ -87,9 +97,11 @@ float highScore = 0;
 boolean reset = false;
 
 //moosick
+/*
 import processing.sound.*; //importing SoundFile library
 //background music
 SoundFile backgroundMusic; 
+*/
 
 //****************************************************************************************
 void setup() {
@@ -127,21 +139,12 @@ void draw() {
   }
   //exit
   exitGate();
+  //portal
+  portal();
   //player
   player(px, py);
   //controls
-  if(aDown){
-    px = px - 1;
-  }
-  if(dDown){
-    px = px + 1;
-  }
-  if(wDown){
-    py = py - 1;
-  }
-  if(sDown){
-    py = py + 1;
-  }
+  controls();
   //enemies
   enemy(arrayS);
   //hit detection and subsequent reset
@@ -159,6 +162,31 @@ void draw() {
 }
 //****************************************************************************************
 
+void controls(){
+  //controls
+  //checks if nightmare mode is on, and if so, doubles speed
+  if(aDown && nightMare){
+    px = px -2;
+  }else if(aDown){
+    px = px -1;
+  }
+  if(dDown && nightMare){
+    px = px +2;
+  }else if(dDown){
+    px = px +1;
+  }
+  if(wDown && nightMare){
+    py = py -2;
+  }else if(wDown){
+    py = py -1;
+  }
+  if(sDown && nightMare){
+    py = py +2;
+  }else if(sDown){
+    py = py +1;
+  }
+}
+
 void exitGate(){ //visualising exit
   if(px > width-150 && py > height-100){
     strokeWeight(6);
@@ -175,6 +203,44 @@ void exitGate(){ //visualising exit
       vertex(px,py);
       endShape(CLOSE);
     }
+  }
+}
+
+void portal(){ //from 325,375 to 525,725
+  //one-way portal
+  strokeWeight(4);
+  ellipseMode(CENTER);
+  if(px > 200 && px < 350 && py > 350 && py < 400){ //make portal visible only when near
+    //light-cone
+    noStroke();
+    fill(255,100);
+    beginShape();
+    vertex(325,375-10);
+    vertex(325,375+10);
+    vertex(px,py);
+    endShape();
+    //orange portal (entry)
+    stroke(255,94,19); 
+    fill(0);
+    ellipse(325,375,20,35);
+    if(px > 325-5 && px < 325+5 && py > 375-17 && py < 375+17){ //teleport
+      px = 525;
+      py = 725;
+    }
+  }
+  if(px > 500 && px < 550 && py > 650 && py < 750){
+    //light-cone
+    noStroke();
+    fill(255,100);
+    beginShape();
+    vertex(525-17,725);
+    vertex(525+17,725);
+    vertex(px,py);
+    endShape();
+    //blue portal (exit)
+    stroke(57,138,215); 
+    fill(0);
+    ellipse(525,725,35,20);
   }
 }
 
@@ -257,11 +323,17 @@ void hit() {
       px = 25; 
       py = 25;
       score = 0;
-      nightMare = false;
       //resets enemies
-      for(int n2 = 0; n2 < arrayS; n2 += 1){
-        speedX[n2] = random(-1.5,1.5);
-        speedY[n2] = random(-1.5,1.5);
+      if(!nightMare){
+        for(int n2 = 0; n2 < arrayS; n2 += 1){
+          speedX[n2] = random(-1.5,1.5);
+          speedY[n2] = random(-1.5,1.5);
+        }
+      }else{
+        for(int n3 = 0; n3 < arrayS; n3 += 1){
+          speedX[n3] = random(-3,3);
+          speedY[n3] = random(-3,3);
+        }
       }
     }
   }
@@ -347,9 +419,9 @@ boolean lineCircle(float x1, float y1, float x2, float y2, float px, float py, f
 
   // optionally, draw a circle at the closest
   // point on the line
-  fill(0, 0, 0, 0); //invisible, but can be changed to something like fill(0, 255, 0, 255); to debug collisions
+  fill(0,0,0,0); //invisible, but can be changed to something like fill(0,255,0,255); to debug collisions
   noStroke();
-  ellipse(closestX, closestY, 20, 20);
+  ellipse(closestX, closestY, 5, 5);
 
   // get distance to closest point
   distX = closestX - px;
@@ -431,6 +503,8 @@ void keyPressed() //when key is pressed
     sDown = true;
   }
   if(key == 'r' || key == 'R'){
+    nightMare = false; //moved nightmare mode reset to here to avoid having to
+                       //constantly initiate it
     reset = true;
   }
   if(key == 'u' || key == 'U'){
@@ -714,8 +788,9 @@ void maze() { //creates coordinates for the maze
 }
 
 //debug mode
-
+/*
 void mouseDragged() {
   px = mouseX;
   py = mouseY;
 }
+*/
