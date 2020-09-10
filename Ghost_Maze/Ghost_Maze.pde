@@ -38,8 +38,8 @@
 - On nightmare mode, the number of ghosts are doubled, and their speed is also 
   doubled, however, your timer only counts half as fast and your speed is doubled too, 
   making it possible to achieve even faster times than on normal mode.
-- Theoretically, the lowest score possible is about 20-25s, my personal highscore 
-  is 40s (with portal), 54s (without portal).
+- Theoretically, the lowest score possible is about 10s, my personal highscore 
+  is 40s (with portal), 54s (without portal), 14s (with portal and nightmare mode).
 - You can see the eyes of the roaming ghosts and use it to your advantage!
 - There is a portal hidden somewhere on the level, which may give you an advantage!
 - Nightmare mode only gets turned off when you press R to reset the game.
@@ -279,18 +279,20 @@ void enemy(int n){
     eX[n] = eX[n] - speedX[n];
     eY[n] = eY[n] - speedY[n];
     if(eX[n] < px+pSize*6 && eY[n] < py+pSize*6 && eX[n] > px-pSize*6 && eY[n] > py-pSize*6){
-      strokeWeight(2);
-      stroke(mazeCol);
-      fill(mazeCol);
-      //diamond shape
-      beginShape();
-      vertex(eX[n],eY[n]-pSize*2);
-      vertex(eX[n]+pSize*2,eY[n]);
-      vertex(eX[n],eY[n]+pSize*2);
-      vertex(eX[n]-pSize*2,eY[n]);
-      endShape(CLOSE);
-      fovSize = 100;
+      fovSize = 100; //makes your fov smaller when enemies are nearby
     }
+    //enemies
+    strokeWeight(2);
+    stroke(mazeCol);
+    fill(mazeCol);
+    //diamond shape
+    beginShape();
+    vertex(eX[n],eY[n]-pSize*2);
+    vertex(eX[n]+pSize*2,eY[n]);
+    vertex(eX[n],eY[n]+pSize*2);
+    vertex(eX[n]-pSize*2,eY[n]);
+    endShape(CLOSE);
+    //eyes
     noStroke();
     if(mazeCol != color(0)){
      fill(255, 255, 255);
