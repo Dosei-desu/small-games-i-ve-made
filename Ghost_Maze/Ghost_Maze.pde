@@ -4,6 +4,7 @@
 /*
 - zeroIndex - *45s* (normal mode / pre-portal update)
 - Dosei ----- *40s* (normal mode)
+- Dosei ----- *14s* (nightmare mode)
 */
 
 //Updates:
