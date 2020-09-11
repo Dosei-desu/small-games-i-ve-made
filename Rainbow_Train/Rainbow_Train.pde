@@ -6,7 +6,7 @@
   //train
 float trainX = 1200; 
 float trainY;
-int trainRan = (int)random(0,2);
+int trainRan = (int)random(0,3);
 float speed = 10;
   //player
 float playerX = 150; 
@@ -61,9 +61,9 @@ void trainSpawn(){
 void trainRespawn(float x, float size){
   if(x+1125*size <= 0){
     trainX = 1200;
-    trainRan = (int)random(0,2);
+    trainRan = (int)random(0,3);
     if(speed <= 79){ //controls upper limit of speed
-      speed += 1;
+      speed += 5;
     }
   }
 }
@@ -81,7 +81,7 @@ void trainTracks(float y){
 void collision(float x, float y, float size){
   if(playerX > x && playerX < x+1125*size && playerY > y-25*size && playerY < y+25*size){
     trainX = 1200; 
-    trainRan = (int)random(0,2);
+    trainRan = (int)random(0,3);
     speed = 10;
     playerX = 150; 
     playerY = height/2;
@@ -147,10 +147,10 @@ void rainbowTrain(float x, float y, float size){
 }
 
 void controls(){
-  if(aDown){
+  if(aDown && playerX > 16){
     playerX = playerX -10;
   }
-  if(dDown){
+  if(dDown && playerX < width-16){
     playerX = playerX +10;
   }
 }
