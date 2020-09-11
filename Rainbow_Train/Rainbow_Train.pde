@@ -1,6 +1,6 @@
 //Rainbow Train
 
-//Inspired by the "Borderlands 3 DLC: 'Psycho Krieg and the Fantastic Fustercluck'"
+//Inspired by the "Borderlands 3 DLC: 'Psycho Krieg and the Fantastic Fustercluck'" and its anthropomorphic rainbow train boss
 
 //global variables
   //train
@@ -48,7 +48,7 @@ void player(float x, float y){
   strokeWeight(4);
   stroke(255);
   fill(255,105,180);
-  circle(x,y,25);
+  circle(x,y,20);
 }
 
 void trainSpawn(){
@@ -78,20 +78,26 @@ void trainTracks(float y){
   }
 }
 
-void rainbowTrain(float trainX, float trainY, float size){
+void collision(float size){
+  if(playerX > trainX && playerX < trainX+1125*size && playerY < trainY-25*size && playerY > trainY+25*size){
+    println("You were turned into a fine paste by the Rainbow Train.");
+  }
+}
+
+void rainbowTrain(float x, float y, float size){
   //let's draw!
     //lights
   noStroke();
   fill(200,150);
   beginShape();
-  vertex(trainX,trainY-5);
-  vertex(trainX-200,trainY-35);
-  vertex(trainX-200,trainY+25);
+  vertex(x,y-5);
+  vertex(x-200,y-35);
+  vertex(x-200,y+25);
   endShape(CLOSE);
   beginShape();
-  vertex(trainX,trainY+5);
-  vertex(trainX-200,trainY-25);
-  vertex(trainX-200,trainY+35);
+  vertex(x,y+5);
+  vertex(x-200,y-25);
+  vertex(x-200,y+35);
   endShape(CLOSE);
   //train
   strokeWeight(4);
@@ -99,39 +105,40 @@ void rainbowTrain(float trainX, float trainY, float size){
   fill(random(0,255),random(0,255),random(0,255));
     //front bit
   beginShape();
-  vertex(trainX,trainY);
-  vertex(trainX,trainY-5*size);
-  vertex(trainX+5*size,trainY-10*size);
-  vertex(trainX+15*size,trainY-15*size);
-  vertex(trainX+30*size,trainY-20*size);
-  vertex(trainX+75*size,trainY-25*size);
-  vertex(trainX+75*size,trainY+25*size);
-  vertex(trainX+30*size,trainY+20*size);
-  vertex(trainX+15*size,trainY+15*size);
-  vertex(trainX+5*size,trainY+10*size);
-  vertex(trainX,trainY+5*size);
+  vertex(x,y);
+  vertex(x,y-5*size);
+  vertex(x+5*size,y-10*size);
+  vertex(x+15*size,y-15*size);
+  vertex(x+30*size,y-20*size);
+  vertex(x+75*size,y-25*size);
+  vertex(x+75*size,y+25*size);
+  vertex(x+30*size,y+20*size);
+  vertex(x+15*size,y+15*size);
+  vertex(x+5*size,y+10*size);
+  vertex(x,y+5*size);
   endShape(CLOSE);
     //carriages
   rectMode(CORNERS);
-  rect(trainX+75*size,trainY-25*size,trainX+275*size,trainY+25*size);
-  rect(trainX+275*size,trainY-25*size,trainX+475*size,trainY+25*size);
-  rect(trainX+475*size,trainY-25*size,trainX+675*size,trainY+25*size);
-  rect(trainX+675*size,trainY-25*size,trainX+875*size,trainY+25*size);
-  rect(trainX+875*size,trainY-25*size,trainX+1075*size,trainY+25*size);
+  rect(x+75*size,y-25*size,x+275*size,y+25*size);
+  rect(x+275*size,y-25*size,x+475*size,y+25*size);
+  rect(x+475*size,y-25*size,x+675*size,y+25*size);
+  rect(x+675*size,y-25*size,x+875*size,y+25*size);
+  rect(x+875*size,y-25*size,x+1075*size,y+25*size);
     //back bit
   beginShape();
-  vertex(trainX+1075*size,trainY-25*size);
-  vertex(trainX+1100*size,trainY-25*size);
-  vertex(trainX+1115*size,trainY-20*size);
-  vertex(trainX+1120*size,trainY-15*size);
-  vertex(trainX+1125*size,trainY-5*size);
-  vertex(trainX+1125*size,trainY+5*size);
-  vertex(trainX+1120*size,trainY+15*size);
-  vertex(trainX+1115*size,trainY+20*size);
-  vertex(trainX+1100*size,trainY+25*size);
-  vertex(trainX+1075*size,trainY+25*size);
+  vertex(x+1075*size,y-25*size);
+  vertex(x+1100*size,y-25*size);
+  vertex(x+1115*size,y-20*size);
+  vertex(x+1120*size,y-15*size);
+  vertex(x+1125*size,y-5*size);
+  vertex(x+1125*size,y+5*size);
+  vertex(x+1120*size,y+15*size);
+  vertex(x+1115*size,y+20*size);
+  vertex(x+1100*size,y+25*size);
+  vertex(x+1075*size,y+25*size);
   endShape(CLOSE);
-  trainRespawn(trainX,size);
+  trainRespawn(x,size);
+  collision(size);
 }
 
 void controls(){
