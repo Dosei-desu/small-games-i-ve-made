@@ -104,12 +104,14 @@ void rainbowTrain(float trainX, float trainY, float size){
   trainRespawn(trainX,size);
 }
 
-void trainRespawn(float trainX, float size){
-  if(trainX+1125*size == 0){
+void trainRespawn(float x, float size){
+  if(x+1125*size <= 0){
     trainX = 1200;
     trainRan = (int)random(0,7);
+    if(speed <= 50){
+      speed += 1;
+    }
     println("respawn");
-    
   }
   println(trainX);
 }
