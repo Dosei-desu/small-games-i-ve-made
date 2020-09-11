@@ -4,8 +4,10 @@
 
 //global variables
   //train
-float trainX, trainY;
-int trainRan = (int)random(1,20);
+float trainX = 1200; 
+float trainY;
+int trainRan = (int)random(0,7);
+float speed = 10;
   //player
 float playerX, playerY;
 
@@ -24,21 +26,26 @@ void draw(){
   //fog
   rectMode(CENTER);
   noStroke();
-  fill(0,150);
+  fill(0,100);
   rect(width/2,height/2,800,400);
   //train
   trainSpawn();
 }
 
 void player(float x, float y){
-  
+  x = mouseX;
+  y = mouseY;
+  strokeWeight(4);
+  stroke(255);
+  fill(255,105,180);
+  circle(x,y,25);
 }
 
 void trainSpawn(){
   //train, chugga, chugga, chugga
-  trainX = 200;
-  trainY = 200;
+  trainY = 15+(trainRan*53);
   rainbowTrain(trainX,trainY,0.4);
+  trainX -= speed;
 }
 
 void rainbowTrain(float trainX, float trainY, float size){
@@ -56,7 +63,6 @@ void rainbowTrain(float trainX, float trainY, float size){
   vertex(trainX-200,trainY-25);
   vertex(trainX-200,trainY+35);
   endShape(CLOSE);
-  
   //train
   strokeWeight(4);
   stroke(50);
@@ -95,6 +101,17 @@ void rainbowTrain(float trainX, float trainY, float size){
   vertex(trainX+1100*size,trainY+25*size);
   vertex(trainX+1075*size,trainY+25*size);
   endShape(CLOSE);
+  trainRespawn(trainX,size);
+}
+
+void trainRespawn(float trainX, float size){
+  if(trainX+1125*size == 0){
+    trainX = 1200;
+    trainRan = (int)random(0,7);
+    println("respawn");
+    
+  }
+  println(trainX);
 }
 
 void trainTracks(float y){
