@@ -6,11 +6,11 @@
   //train
 float trainX = 1200; 
 float trainY;
-int trainRan = (int)random(0,7);
+int trainRan = (int)random(0,2);
 float speed = 10;
   //player
 float playerX = 150; 
-float playerY = 15+53*3;
+float playerY = 200;
     //controls
 boolean aDown = false;
 boolean dDown = false;
@@ -24,12 +24,12 @@ void setup(){
 
 void draw(){
   background(0);
-  for(int n = 0; n < 8; ++n){ //spawn them tracks!
+  for(int n = 0; n < 3; ++n){ //spawn them tracks!
     stroke(150);
-    trainTracks(15+(n*53));
+    trainTracks(height/2-53+(n*53));
     if(n == trainRan){
       stroke(random(0,255),random(0,255),random(0,255));
-      trainTracks(15+(n*53));
+      trainTracks(height/2-53+(n*53));
     }
   }
   //player
@@ -53,7 +53,7 @@ void player(float x, float y){
 
 void trainSpawn(){
   //train, chugga, chugga, chugga
-  trainY = 15+(trainRan*53);
+  trainY = 200-53+(trainRan*53);
   rainbowTrain(trainX,trainY,0.4);
   trainX -= speed;
 }
@@ -61,7 +61,7 @@ void trainSpawn(){
 void trainRespawn(float x, float size){
   if(x+1125*size <= 0){
     trainX = 1200;
-    trainRan = (int)random(0,7);
+    trainRan = (int)random(0,2);
     if(speed <= 79){ //controls upper limit of speed
       speed += 1;
     }
@@ -78,8 +78,13 @@ void trainTracks(float y){
   }
 }
 
-void collision(float size){
-  if(playerX > trainX && playerX < trainX+1125*size && playerY < trainY-25*size && playerY > trainY+25*size){
+void collision(float x, float y, float size){
+  if(playerX > x && playerX < x+1125*size && playerY > y-25*size && playerY < y+25*size){
+    trainX = 1200; 
+    trainRan = (int)random(0,2);
+    speed = 10;
+    playerX = 150; 
+    playerY = height/2;
     println("You were turned into a fine paste by the Rainbow Train.");
   }
 }
@@ -138,7 +143,7 @@ void rainbowTrain(float x, float y, float size){
   vertex(x+1075*size,y+25*size);
   endShape(CLOSE);
   trainRespawn(x,size);
-  collision(size);
+  collision(x,y,size);
 }
 
 void controls(){
@@ -157,12 +162,12 @@ void keyPressed(){
   else if(key == 'D' || key == 'd' || keyCode == RIGHT){
     dDown = true;
   }
-  if(playerY != 15){
+  if(playerY != 200-53){
     if(key == 'W' || key == 'w' || keyCode == UP){
       playerY = playerY -53;
     }
   }
-  if(playerY != 15+(53*7)){
+  if(playerY != 200-53+(53*2)){
     if(key == 'S' || key == 's' || keyCode == DOWN){
       playerY = playerY +53;
     }
