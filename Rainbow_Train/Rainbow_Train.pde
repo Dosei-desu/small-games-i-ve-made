@@ -9,7 +9,13 @@ float trainY;
 int trainRan = (int)random(0,7);
 float speed = 10;
   //player
-float playerX, playerY;
+float playerX = 150; 
+float playerY = 15+53*3;
+    //controls
+boolean aDown = false;
+boolean dDown = false;
+  //gameplay stuff
+boolean reset = false;
 
 void setup(){
   size(800,400);
@@ -28,6 +34,7 @@ void draw(){
   }
   //player
   player(playerX,playerY);
+  controls();
   //fog
   rectMode(CENTER);
   noStroke();
@@ -38,8 +45,6 @@ void draw(){
 }
 
 void player(float x, float y){
-  x = mouseX;
-  y = mouseY;
   strokeWeight(4);
   stroke(255);
   fill(255,105,180);
@@ -57,11 +62,9 @@ void trainRespawn(float x, float size){
   if(x+1125*size <= 0){
     trainX = 1200;
     trainRan = (int)random(0,7);
-    if(speed <= 50){
+    if(speed <= 79){ //controls upper limit of speed
       speed += 1;
     }
-    println("respawn");
-    println(speed);
   }
 }
 
@@ -129,4 +132,44 @@ void rainbowTrain(float trainX, float trainY, float size){
   vertex(trainX+1075*size,trainY+25*size);
   endShape(CLOSE);
   trainRespawn(trainX,size);
+}
+
+void controls(){
+  if(aDown){
+    playerX = playerX -10;
+  }
+  if(dDown){
+    playerX = playerX +10;
+  }
+}
+
+void keyPressed(){
+  if (key == 'A' || key == 'a' || keyCode == LEFT){
+    aDown = true;
+  }
+  else if(key == 'D' || key == 'd' || keyCode == RIGHT){
+    dDown = true;
+  }
+  if(playerY != 15){
+    if(key == 'W' || key == 'w' || keyCode == UP){
+      playerY = playerY -53;
+    }
+  }
+  if(playerY != 15+(53*7)){
+    if(key == 'S' || key == 's' || keyCode == DOWN){
+      playerY = playerY +53;
+    }
+  }
+  if(key == 'r' || key == 'R'){
+    reset = true;
+  }
+}
+void keyReleased(){
+  if (key == 'A' || key == 'a' || keyCode == LEFT){
+    aDown = false;
+  }
+  else if(key == 'D' || key == 'd' || keyCode == RIGHT){
+    dDown = false;
+  }
+
 }
