@@ -19,7 +19,12 @@ void setup(){
 void draw(){
   background(0);
   for(int n = 0; n < 8; ++n){ //spawn them tracks!
+    stroke(150);
     trainTracks(15+(n*53));
+    if(n == trainRan){
+      stroke(random(0,255),random(0,255),random(0,255));
+      trainTracks(15+(n*53));
+    }
   }
   //player
   player(playerX,playerY);
@@ -46,6 +51,28 @@ void trainSpawn(){
   trainY = 15+(trainRan*53);
   rainbowTrain(trainX,trainY,0.4);
   trainX -= speed;
+}
+
+void trainRespawn(float x, float size){
+  if(x+1125*size <= 0){
+    trainX = 1200;
+    trainRan = (int)random(0,7);
+    if(speed <= 50){
+      speed += 1;
+    }
+    println("respawn");
+    println(speed);
+  }
+}
+
+void trainTracks(float y){
+  //t-t-t-t-train traaacks!!!
+  line(0,y-10,width,y-10);
+  line(0,y+10,width,y+10);
+  //vertical lines
+  for(int n = 0; n < 54; ++n){
+    line(5+(n*15),y-15,5+(n*15),y+15);
+  }
 }
 
 void rainbowTrain(float trainX, float trainY, float size){
@@ -102,27 +129,4 @@ void rainbowTrain(float trainX, float trainY, float size){
   vertex(trainX+1075*size,trainY+25*size);
   endShape(CLOSE);
   trainRespawn(trainX,size);
-}
-
-void trainRespawn(float x, float size){
-  if(x+1125*size <= 0){
-    trainX = 1200;
-    trainRan = (int)random(0,7);
-    if(speed <= 50){
-      speed += 1;
-    }
-    println("respawn");
-  }
-  println(trainX);
-}
-
-void trainTracks(float y){
-  //t-t-t-t-train traaacks!!!
-  stroke(150);
-  line(0,y-10,width,y-10);
-  line(0,y+10,width,y+10);
-  //vertical lines
-  for(int n = 0; n < 54; ++n){
-    line(5+(n*15),y-15,5+(n*15),y+15);
-  }
 }
