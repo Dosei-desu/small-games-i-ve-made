@@ -2,28 +2,44 @@
 
 //Inspired by the "Borderlands 3 DLC: 'Psycho Krieg and the Fantastic Fustercluck'" and its anthropomorphic rainbow train boss
 
-//global variables
-  //train
+
+//------------------------------------------------------------------------------------------------------//
+//Global variables
+
+//train
 float trainX = 1200; 
 float trainY;
 int trainRan = (int)random(0,3);
 float speed = 10;
-  //player
-float playerX = 150; 
+
+//player
+float playerX = 50; 
 float playerY = 200;
-    //controls
+  //controls
 boolean aDown = false;
 boolean dDown = false;
-  //gameplay stuff
+  
+//gameplay stuff
 boolean reset = false;
+float score = 0;
+float highScore = 0;
+int deathCounter = 0;
+
+//------------------------------------------------------------------------------------------------------//
+//setup
 
 void setup(){
   size(800,400);
   frameRate(30);
 }
 
+//------------------------------------------------------------------------------------------------------//
+//draw
+
 void draw(){
   background(0);
+  
+  //train the tracks
   for(int n = 0; n < 3; ++n){ //spawn them tracks!
     stroke(150);
     trainTracks(height/2-53+(n*53));
@@ -32,17 +48,37 @@ void draw(){
       trainTracks(height/2-53+(n*53));
     }
   }
-  //player
+  
+  //player stuff
   player(playerX,playerY);
   controls();
   //fog
   rectMode(CENTER);
   noStroke();
-  fill(0,100);
+  if(speed > 75){
+    fill(255,0,0,100);
+  }else if(speed > 60){
+    fill(200,0,0,100);
+  }else if(speed > 45){
+    fill(100,0,0,100);
+  }else{
+    fill(0,100);
+  }
   rect(width/2,height/2,800,400);
+  
   //train
   trainSpawn();
+  
+  //reset
+  reset();
+  
+  //score
+  score();
+  deathCounter();
 }
+
+//------------------------------------------------------------------------------------------------------//
+//player and score stuff
 
 void player(float x, float y){
   strokeWeight(4);
@@ -50,6 +86,43 @@ void player(float x, float y){
   fill(255,105,180);
   circle(x,y,20);
 }
+
+void score(){
+  score += 1;
+  if(highScore == 0 || score > highScore){
+    highScore = score;
+  }
+  fill(255,105,180);
+  textAlign(CENTER,BOTTOM);
+  textSize(25);
+  text("Score: "+(int)score/30,150,50);
+  text("Highscore: "+(int)highScore/30,650,50);
+}
+
+void deathCounter(){
+  if(deathCounter > 0){
+    fill(255);
+    textAlign(CENTER,BOTTOM);
+    textSize(35);
+    text(deathCounter,width/2,60);
+  }
+}
+
+void reset(){
+  if(reset){
+    trainX = 1200; 
+    trainRan = (int)random(0,3);
+    speed = 10;
+    playerX = 150; 
+    playerY = height/2;
+    score = 0;
+    deathCounter += 1;
+    reset = false;
+  }
+}
+
+//------------------------------------------------------------------------------------------------------//
+//train and tracks
 
 void trainSpawn(){
   //train, chugga, chugga, chugga
@@ -85,7 +158,9 @@ void collision(float x, float y, float size){
     speed = 10;
     playerX = 150; 
     playerY = height/2;
-    println("You were turned into a fine paste by the Rainbow Train.");
+    deathCounter += 1;
+    println("You were turned into a fine paste by the Rainbow Train at "+(int)score/30+" seconds.");
+    score = 0;
   }
 }
 
@@ -145,6 +220,9 @@ void rainbowTrain(float x, float y, float size){
   trainRespawn(x,size);
   collision(x,y,size);
 }
+
+//------------------------------------------------------------------------------------------------------//
+//player controls
 
 void controls(){
   if(aDown && playerX > 16){
