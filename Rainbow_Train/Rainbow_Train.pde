@@ -1,6 +1,18 @@
 //Rainbow Train
 
-//Inspired by the "Borderlands 3 DLC: 'Psycho Krieg and the Fantastic Fustercluck'" and its anthropomorphic rainbow train boss
+//Inspired by the Borderlands 3 DLC: 'Psycho Krieg and the Fantastic Fustercluck' and its anthropomorphic rainbow train boss
+
+
+//Highscorers:
+/*
+DOSEI ---- *50s*
+*/
+
+//Notes:
+/*
+Controls - W,A,S,D / Arrow-keys
+Reset - R
+*/
 
 
 //------------------------------------------------------------------------------------------------------//
@@ -15,9 +27,9 @@ float speed = 10;
 //player
 float playerX = 50; 
 float playerY = 200;
-  //controls
-boolean aDown = false;
-boolean dDown = false;
+  //controls (only necessary for left and right)
+boolean aDown = false; //left
+boolean dDown = false; //right
   
 //gameplay stuff
 boolean reset = false;
@@ -52,9 +64,11 @@ void draw(){
   //player stuff
   player(playerX,playerY);
   controls();
+  
   //fog
   rectMode(CENTER);
   noStroke();
+  //turns screen redder the longer you stay alive
   if(speed > 75){
     fill(255,0,0,100);
   }else if(speed > 60){
@@ -80,7 +94,7 @@ void draw(){
 //------------------------------------------------------------------------------------------------------//
 //player and score stuff
 
-void player(float x, float y){
+void player(float x, float y){ //basically just a circle with controllable coordinates
   strokeWeight(4);
   stroke(255);
   fill(255,105,180);
@@ -89,7 +103,7 @@ void player(float x, float y){
 
 void score(){
   score += 1;
-  if(highScore == 0 || score > highScore){
+  if(highScore == 0 || score > highScore){ //only updates highscore if it's 0 or below score
     highScore = score;
   }
   fill(255,105,180);
@@ -99,7 +113,8 @@ void score(){
   text("Highscore: "+(int)highScore/30,650,50);
 }
 
-void deathCounter(){
+//counts amount of times died without restarting the simulation and also counts resets
+void deathCounter(){ 
   if(deathCounter > 0){
     fill(255);
     textAlign(CENTER,BOTTOM);
@@ -108,7 +123,7 @@ void deathCounter(){
   }
 }
 
-void reset(){
+void reset(){ //handles what happens when reset is reset before being reset back to standard reset
   if(reset){
     trainX = 1200; 
     trainRan = (int)random(0,3);
@@ -124,13 +139,15 @@ void reset(){
 //------------------------------------------------------------------------------------------------------//
 //train and tracks
 
-void trainSpawn(){
+//handles the train (chugga chugga), its spawnpoints based on trainRan (0,1,2), and its speed
+void trainSpawn(){ 
   //train, chugga, chugga, chugga
   trainY = 200-53+(trainRan*53);
   rainbowTrain(trainX,trainY,0.4);
   trainX -= speed;
 }
 
+//controls the respawn mechanic of the train by setting a new trainRan for ^^^^^
 void trainRespawn(float x, float size){
   if(x+1125*size <= 0){
     trainX = 1200;
@@ -141,6 +158,7 @@ void trainRespawn(float x, float size){
   }
 }
 
+//traintrack creator
 void trainTracks(float y){
   //t-t-t-t-train traaacks!!!
   line(0,y-10,width,y-10);
@@ -151,6 +169,7 @@ void trainTracks(float y){
   }
 }
 
+//*boom* *crash* *bang* *reset*
 void collision(float x, float y, float size){
   if(playerX > x && playerX < x+1125*size && playerY > y-25*size && playerY < y+25*size){
     trainX = 1200; 
@@ -164,9 +183,10 @@ void collision(float x, float y, float size){
   }
 }
 
-void rainbowTrain(float x, float y, float size){
+void rainbowTrain(float x, float y, float size){ //chugga chugga
   //let's draw!
-    //lights
+  
+  //headlights
   noStroke();
   fill(200,150);
   beginShape();
@@ -179,6 +199,7 @@ void rainbowTrain(float x, float y, float size){
   vertex(x-200,y-25);
   vertex(x-200,y+35);
   endShape(CLOSE);
+  
   //train
   strokeWeight(4);
   stroke(50);
@@ -217,6 +238,8 @@ void rainbowTrain(float x, float y, float size){
   vertex(x+1100*size,y+25*size);
   vertex(x+1075*size,y+25*size);
   endShape(CLOSE);
+  
+  //these are pushed in here to use the same coordinate and size variable
   trainRespawn(x,size);
   collision(x,y,size);
 }
@@ -224,8 +247,10 @@ void rainbowTrain(float x, float y, float size){
 //------------------------------------------------------------------------------------------------------//
 //player controls
 
-void controls(){
-  if(aDown && playerX > 16){
+//two different types of controls for movement: rapidly-updated side-to-side and slow up-and-down
+
+void controls(){ //only for side-to-side, since this updates rapidly and is unfit for up-and-down movement
+  if(aDown && playerX > 16){ //checks coordinates of playerX to ensure you don't leave the tracks
     playerX = playerX -10;
   }
   if(dDown && playerX < width-16){
@@ -240,7 +265,7 @@ void keyPressed(){
   else if(key == 'D' || key == 'd' || keyCode == RIGHT){
     dDown = true;
   }
-  if(playerY != 200-53){
+  if(playerY != 200-53){ //checks coordinates of playerY to ensure you don't leave the tracks
     if(key == 'W' || key == 'w' || keyCode == UP){
       playerY = playerY -53;
     }
