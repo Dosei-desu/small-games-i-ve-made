@@ -20,7 +20,7 @@ float[] ran2 = new float[100]; //y
 //spaceship image
 PImage spaceShip;
 
-//blaster laser
+//blaster / laser
 float laserX = 0, laserY = 0, laserTimer = 0;
 boolean click = false;
 
@@ -101,7 +101,7 @@ void blaster(){
 }
 
 void lasers(){
-  if(click){
+ if(click){
     strokeWeight(4);
     stroke(0,255,0);
     line(laserX+50,laserY+13,laserX+75,laserY+13);
@@ -124,8 +124,8 @@ void spaceship(){ //...that you have to protect
 }
 
 void mouseTracker(){
-  myMouse.set(mouseX,mouseY,0); //sets pvector (x,y,z)
-  myMouse.sub(width/2,850,0); //subtracts pvector (x,y,z) (sets it to centrepoint / has to be the same as translate)
+  myMouse.set(mouseX,mouseY); //sets pvector (x,y,z) you don't need to declare z as 0, it's defaulted to that
+  myMouse.sub(width/2,850); //subtracts pvector (x,y,z) (sets it to centrepoint / has to be the same as translate)
   alpha = myMouse.heading(); //calculates angle for 2D vectors | https://processing.org/reference/PVector_heading_.html |
   dalpha = (alpha - rot)/PI; //angle minus rotation divided by PI, basically is 0.0 whenever its equal to the coordinates of myMouse
   //if the myMouse coordinates don't match with the dalpha (which is 0.0), i.e are bigger or smaller, then it changes the rotation accordingly
