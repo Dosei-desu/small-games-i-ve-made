@@ -1,8 +1,11 @@
 //Asteroid shooter with mouse-tracking blaster
 
 
+//Need to implement a vector to handle lasers, but not sure how...
+
 //Coding Notes
 /*
+- Sensei zeroIndex helped me with this sketch in a lot of different ways.
 - Gotten a lot of help for the blaster mouse-tracking code from:
   https://discourse.processing.org/t/rotation-and-easing/5704/4
 - Used https://print-graph-paper.com/virtual-graph-paper to help visualise vector shapes
@@ -22,7 +25,7 @@ PImage spaceShip;
 
 //blaster / laser
 float laserX = 0;
-float laserRot = 0;
+float laserY = 800;
 float laserSpeed = 0; //set to 0 because reasons
 color laserCol = color(0,255,0,0); //spawn invisible
 boolean doOnce = true; //just this once, plz
@@ -30,6 +33,10 @@ boolean doOnce = true; //just this once, plz
 //mouse tracking (have to be global as they are used outside the mouse-tracker object)
 PVector myMouse = new PVector(); //creates mouse vector
 float rot = 0, alpha, dalpha, easing = 0.5; //rotation, alpha, dalpha, and easing (controls speed of mouse tracking)
+
+//test target
+float tarX, tarY, tarDia;
+color tarCol = color(0,0,255);
 
 //--------------------------------------------------------------------------------------------------------------
 //Setup
@@ -45,6 +52,9 @@ void setup(){
   }
   //spaceship image
   spaceShip = loadImage("spaceShip.png");
+  
+  //test target
+  tarX = 200; tarY = 200; tarDia = 50;
 }
 //--------------------------------------------------------------------------------------------------------------
 //Draw
@@ -63,8 +73,107 @@ void draw(){
   blaster();
   //laser blaster
   lasers();
+  
+  //test target
+  strokeWeight(2);
+  stroke(0);
+  fill(tarCol);
+  circle(tarX,tarY,tarDia);
 }
 //--------------------------------------------------------------------------------------------------------------
+
+void collision(){
+  boolean hit = lineCircle(laserY+50,13,laserY+75,13, tarX, tarY, tarDia/2);
+  if(hit){
+    tarCol = color(255,0,0);
+  }
+}
+
+// LINE/CIRCLE
+boolean lineCircle(float x1, float y1, float x2, float y2, float cx, float cy, float r) {
+
+  // is either end INSIDE the circle?
+  // if so, return true immediately
+  boolean inside1 = pointCircle(x1,y1, cx,cy,r);
+  boolean inside2 = pointCircle(x2,y2, cx,cy,r);
+  if (inside1 || inside2) return true;
+
+  // get length of the line
+  float distX = x1 - x2;
+  float distY = y1 - y2;
+  float len = sqrt( (distX*distX) + (distY*distY) );
+
+  // get dot product of the line and circle
+  float dot = ( ((cx-x1)*(x2-x1)) + ((cy-y1)*(y2-y1)) ) / pow(len,2);
+
+  // find the closest point on the line
+  float closestX = x1 + (dot * (x2-x1));
+  float closestY = y1 + (dot * (y2-y1));
+
+  // is this point actually on the line segment?
+  // if so keep going, but if not, return false
+  boolean onSegment = linePoint(x1,y1,x2,y2, closestX,closestY);
+  if (!onSegment) return false;
+
+  // optionally, draw a circle at the closest
+  // point on the line
+  fill(255,0,0);
+  noStroke();
+  ellipse(closestX, closestY, 20, 20);
+
+  // get distance to closest point
+  distX = closestX - cx;
+  distY = closestY - cy;
+  float distance = sqrt( (distX*distX) + (distY*distY) );
+
+  if (distance <= r) {
+    return true;
+  }
+  return false;
+}
+
+
+// POINT/CIRCLE
+boolean pointCircle(float px, float py, float cx, float cy, float r) {
+
+  // get distance between the point and circle's center
+  // using the Pythagorean Theorem
+  float distX = px - cx;
+  float distY = py - cy;
+  float distance = sqrt( (distX*distX) + (distY*distY) );
+
+  // if the distance is less than the circle's
+  // radius the point is inside!
+  if (distance <= r) {
+    return true;
+  }
+  return false;
+}
+
+
+// LINE/POINT
+boolean linePoint(float x1, float y1, float x2, float y2, float px, float py) {
+
+  // get distance from the point to the two ends of the line
+  float d1 = dist(px,py, x1,y1);
+  float d2 = dist(px,py, x2,y2);
+
+  // get the length of the line
+  float lineLen = dist(x1,y1, x2,y2);
+
+  // since floats are so minutely accurate, add
+  // a little buffer zone that will give collision
+  float buffer = 0.1;    // higher # = less accurate
+
+  // if the two distances are equal to the line's
+  // length, the point is on the line!
+  // note we use the buffer here to give a range,
+  // rather than one #
+  if (d1+d2 >= lineLen-buffer && d1+d2 <= lineLen+buffer) {
+    return true;
+  }
+  return false;
+}
 
 void blaster(){
   pushMatrix(); //matrix containing blaster (without the matrix, the translate and rotate would affect the entire sketch)
@@ -99,30 +208,25 @@ void blaster(){
 }
 
 void lasers(){
-  pushMatrix();
-  translate(0, 850);
-  rotate(laserRot);
   //laser lines
   strokeWeight(4);
   stroke(laserCol);
-  line(laserX+50,13,laserX+75,13);
-  line(laserX+50,-13,laserX+75,-13);
-  laserX = laserX + laserSpeed; 
-  popMatrix();
+  line(laserX+13,laserY,laserX+13,laserY-25);
+  line(laserX-13,laserY,laserX-13,laserY-25);
+  laserY = laserY - laserSpeed; 
+  
 }
 
 void mousePressed(){
   if(doOnce){
     laserSpeed = 15;
-    laserX = 0;
-    laserRot = rot;
+    laserY = 800;
     laserCol = color(0,255,0,255);
     doOnce = false;
   }
   
-  if(laserX > 900){
-    laserX = 0;
-    laserRot = rot;
+  if(laserY < 0){
+    laserY = 800;
   }
 }
 
