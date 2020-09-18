@@ -87,17 +87,19 @@ void draw() {
          myMouse.heading() <= target[i].asteroidVecHeading()+0.04 && myMouse.heading() >= target[i].asteroidVecHeading()-0.075){ 
          println("hit!");
       }else{
-        strokeWeight(5);
-        stroke(0);
-        fill(255);
-        target[i].update();
         if(mousePressed){
           println("target "+i+" "+target[i].asteroidVecHeading());
           println("mouse :"+myMouse.heading());
         }
       }
     }    
-  }  
+  } 
+  for(int n = 0; n < target.length; n++){
+    strokeWeight(5);
+    stroke(0);
+    fill(255);
+    target[n].update();
+  }
 }
 //--------------------------------------------------------------------------------------------------------------
 
