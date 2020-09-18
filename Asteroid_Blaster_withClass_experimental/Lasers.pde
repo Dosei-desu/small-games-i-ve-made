@@ -1,7 +1,7 @@
 class Lasers {
   private float ly = 0; 
   private float lRot = 1.5;
-
+  private float lspeed = 0;
   Lasers(float constructor_y, float constructor_rot) {
     this.lRot = constructor_rot;
     this.ly = constructor_y;
@@ -10,6 +10,10 @@ class Lasers {
   float getY(){
     return this.ly;
   }
+  
+  void lVelocity(float _lspeed){
+    this.lspeed = _lspeed;
+  }
 
   void update() {
     pushMatrix();
@@ -17,10 +21,9 @@ class Lasers {
     rotate(this.lRot-1.55);
     //laser lines
     strokeWeight(4);
-    stroke(0, 255, 0);
     line(13, this.ly+50, 13, this.ly+75);
     line(-13, this.ly+50, -13, this.ly+75);
-    ly = ly + 15; 
+    ly = ly + lspeed; 
     //---
     popMatrix();
   }

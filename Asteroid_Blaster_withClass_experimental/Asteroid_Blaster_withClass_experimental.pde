@@ -28,6 +28,7 @@ Lasers laser = new Lasers(0, laserRot);
 int ARRAY_SIZE = 7;
 int laserIndex = 0;
 Lasers[] laserA = new Lasers[ARRAY_SIZE];
+color[] laserCol = new color[ARRAY_SIZE]; 
 
 //mouse tracking (have to be global as they are used outside the mouse-tracker object)
 PVector myMouse = new PVector(); //creates mouse vector
@@ -35,8 +36,9 @@ float rot = 0, alpha, dalpha, easing = 0.5; //rotation, alpha, dalpha, and easin
 
 //target
 float[] targetX = {150,-150,-250};
-float[] targetY = {-700,-500,-300};
+float[] targetY = {-1200,-1000,-800};
 float diameter = 50;
+float[] tempHeading = new float[ARRAY_SIZE];
 Asteroids[] target = {new Asteroids(targetX[0], targetY[0], diameter), new Asteroids(targetX[1], targetY[1], diameter), new Asteroids(targetX[2], targetY[2], diameter)};
 
 
@@ -56,6 +58,7 @@ void setup() {
   //Init of laser array
   for (int i = 0; i < laserA.length; i++) {
     laserA[i] = new Lasers(0, laserRot);
+    laserCol[i] = color(0, 255, 0, 0);
   }
   //spaceship image
   spaceShip = loadImage("spaceShip.png");
@@ -78,22 +81,21 @@ void draw() {
   //laser blaster
   //loop through all the lasers
   for (int i = 0; i < laserA.length; i++) {
+    stroke(laserCol[i]);
     laserA[i].update();
   }
   
   //target practice (declaring all the stuff here just for testing)
-  
-  
   for(int i = 0; i < target.length; i++){
     for(int n = 0; n < laserA.length; n++){    
-      if(laserA[n].getY() > target[i].getY()*-1 && laserA[n].getY() < target[i].getY()*-1+diameter && 
-         myMouse.heading() <= target[i].asteroidVecHeading()+0.04 && myMouse.heading() >= target[i].asteroidVecHeading()-0.075){ 
+      if(laserA[n].getY() > target[i].getY()*-1 && laserA[n].getY() < target[i].getY()*-1+diameter/2 && 
+         tempHeading[n] <= target[i].asteroidVecHeading()+0.04 && tempHeading[n] >= target[i].asteroidVecHeading()-0.075){ 
          println("hit!");
          target[i].hit(true);
       }else{
         if(mousePressed){
-          println("target "+i+" "+target[i].asteroidVecHeading());
-          println("mouse :"+myMouse.heading());
+          println("target: "+i+" "+target[i].asteroidVecHeading());
+          println("laser: "+n+" "+tempHeading[n]);
         }
       }
     }    
@@ -141,7 +143,10 @@ void blaster() {
 }
 
 void mousePressed() {
+  laserCol[laserIndex] = color(0, 255, 0, 255);
   laserA[laserIndex] = new Lasers(0, rot);
+  laserA[laserIndex].lspeed = 15;
+  tempHeading[laserIndex] = alpha;
   if ( laserIndex < ARRAY_SIZE-1 ) {
     laserIndex++;
   } else {

@@ -30,6 +30,6 @@ class Asteroids{
   
   void update(){
     circle(this.x,this.y,this.size);
-    this.y += 1;
+    this.y += 5;
   }
 }
