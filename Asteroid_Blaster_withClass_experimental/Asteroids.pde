@@ -4,6 +4,7 @@ class Asteroids{
   private float x;
   private float y;
   private float size;
+  private boolean hit = false;
   
   Asteroids(float _x, float _y, float _size){
     this.x = _x;
@@ -23,8 +24,12 @@ class Asteroids{
     return this.y;
   }
   
+  void hit(boolean _hit){
+    hit = _hit;
+  }
+  
   void update(){
     circle(this.x,this.y,this.size);
-    this.y -= 5;
+    this.y += 1;
   }
 }

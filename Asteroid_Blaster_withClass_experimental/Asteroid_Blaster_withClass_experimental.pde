@@ -31,8 +31,14 @@ Lasers[] laserA = new Lasers[ARRAY_SIZE];
 
 //mouse tracking (have to be global as they are used outside the mouse-tracker object)
 PVector myMouse = new PVector(); //creates mouse vector
-PVector target = new PVector();
 float rot = 0, alpha, dalpha, easing = 0.5; //rotation, alpha, dalpha, and easing (controls speed of tracking)
+
+//target
+float[] targetX = {150,-150,-250};
+float[] targetY = {-700,-500,-300};
+float diameter = 50;
+Asteroids[] target = {new Asteroids(targetX[0], targetY[0], diameter), new Asteroids(targetX[1], targetY[1], diameter), new Asteroids(targetX[2], targetY[2], diameter)};
+
 
 //--------------------------------------------------------------------------------------------------------------
 //Setup
@@ -76,16 +82,14 @@ void draw() {
   }
   
   //target practice (declaring all the stuff here just for testing)
-  float[] targetX = {150,-150,-250};
-  float[] targetY = {-700,-500,-300};
-  float diameter = 50;
-  Asteroids[] target = {new Asteroids(targetX[0], targetY[0], diameter), new Asteroids(targetX[1], targetY[1], diameter), new Asteroids(targetX[2], targetY[2], diameter)};
+  
   
   for(int i = 0; i < target.length; i++){
     for(int n = 0; n < laserA.length; n++){    
       if(laserA[n].getY() > target[i].getY()*-1 && laserA[n].getY() < target[i].getY()*-1+diameter && 
          myMouse.heading() <= target[i].asteroidVecHeading()+0.04 && myMouse.heading() >= target[i].asteroidVecHeading()-0.075){ 
          println("hit!");
+         target[i].hit(true);
       }else{
         if(mousePressed){
           println("target "+i+" "+target[i].asteroidVecHeading());
@@ -95,10 +99,12 @@ void draw() {
     }    
   } 
   for(int n = 0; n < target.length; n++){
-    strokeWeight(5);
-    stroke(0);
-    fill(255);
-    target[n].update();
+    if(target[n].hit != true){
+      strokeWeight(5);
+      stroke(0);
+      fill(255);
+      target[n].update();
+    }
   }
 }
 //--------------------------------------------------------------------------------------------------------------
