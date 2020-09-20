@@ -2,14 +2,13 @@
 
 //Updates I want to add
 /*
-- Scoreboard thingy.
-- Spaceship health / shield bar.
+- Scoreboard thingy. -partially implemented-
 - Nightmare mode... obviously.
 */
 
 //Bugs
 /*
-- There's only about an 95% chance that a shot will count as a hit. I need to tweak the collision parameters until it's 100%.
+- There's about a 90% chance that a shot will count as a hit. I need to tweak the collision parameters until it's 100%.
 */
 
 //Coding Notes
@@ -17,8 +16,8 @@
 - My coding sensei zeroIndex helped make the Lasers class before I was knowledgeable enough to make it myself, but I did make the Asteroids class myself,
   as well as subsequent changes to the Lasers class, beyond the constructor and update function. I'm still a bit uncertain about class though, truth be told.
   
-- The collision detection is based on PVector.heading(), i.e. the specific degree a PVector is angled from 0,0 on the x,y axis,
-  without this for detection, it'd be very difficult to measure collision, because the laser x and y coordinates are based on a rotating axis
+- The collision detection is based on PVector.heading(), i.e. the specific degree a PVector is angled from 0,0 on the x,y axis, which is centred on the blaster.
+  Without this for detection, it'd be very difficult to measure collision, because the laser x and y coordinates are based on a rotating axis
   that always makes x = 0, and thus basic detection statements become true, regardless of what direction your blaster is pointed. It was a real
   headache to deal with, and I almost gave up several times, but I somehow persevered... yay...
   
@@ -43,7 +42,7 @@ PImage spaceShip;
 
 //blaster / laser
 float laserRot = 1.5;
-int ARRAY_SIZE = 7; //used to control the amount of lasers available
+int ARRAY_SIZE = 14; //used to control the amount of lasers available
 int laserIndex = 0;
 Lasers[] laser = new Lasers[ARRAY_SIZE];
 color[] laserCol = new color[ARRAY_SIZE]; 
@@ -93,6 +92,7 @@ void setup() {
     targetX[n] = random(-300,300);
     targetY[n] = -1000-250*n;
     target[n] = new Asteroids(targetX[n], targetY[n], diameter);
+    target[n].astVelocity(2); //declares initial speed of asteroid targets
   }
   
 }
@@ -125,8 +125,8 @@ void draw() {
     for(int n = 0; n < laser.length; n++){    
       //checks if laser Y and asteroid/target y are close to each other, also checks if laser y is less than 800 (to prevent long shots that
       //trivialise difficulty), and, finally, it checks if the angles of the laser and asteroids from 0,0 are close to each other
-      if(laser[n].getY() > target[i].getY()*-1 && laser[n].getY() < (target[i].getY()*-1)+diameter/2 && laser[n].getY() < 800 &&
-        tempHeading[n] <= target[i].asteroidVecHeading()+0.075 && tempHeading[n] >= target[i].asteroidVecHeading()-0.075 && target[i].hit != true)
+      if(laser[n].getY() > (target[i].getY()+diameter/2)*-1 && laser[n].getY() < (target[i].getY()-diameter/2)*-1 && laser[n].getY() < 800 &&
+        tempHeading[n] <= target[i].asteroidVecHeading()+0.055 && tempHeading[n] >= target[i].asteroidVecHeading()-0.055 && target[i].hit != true)
       {
         target[i].hit(true); //makes hit true to despawn the specific asteroids that fulfill the longass if statement above
         score += 1;
@@ -158,7 +158,7 @@ void scoreBoard(){
 
 void youTookaHit(){
   for(int n = 0; n < target.length; n++){
-    if(target[n].getY() == 0 && oneTimeCount[n] == 0){
+    if(target[n].getY() > 0 && oneTimeCount[n] == 0){
        collisionCounter += 1;
        oneTimeCount[n] = 1;
     }
@@ -204,7 +204,7 @@ void shieldShape(float x, float y, float size){
 void mousePressed() {
   laserCol[laserIndex] = color(0, 255, 0, 255); //doesn't make laser visible until you fire
   laser[laserIndex] = new Lasers(0, rot); //creates the lasers based on the rotation of the mouseTracker and starting y = 0
-  laser[laserIndex].lspeed = 15;  //doesn't set speed until you fire the individual lasers
+  laser[laserIndex].lspeed = 5;  //doesn't set speed until you fire the individual lasers
   tempHeading[laserIndex] = alpha; //makes a temp save of the alpha i.e. myMouse.heading() for every laser shot, 
                                    //which is the angle used to compare with the heading angle of the asteroids
   if ( laserIndex < ARRAY_SIZE-1 ) {
