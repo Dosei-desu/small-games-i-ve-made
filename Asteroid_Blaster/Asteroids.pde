@@ -20,6 +20,10 @@ class Asteroids{
     return asteroidVec(this.x,this.y).heading();
   }
   
+  float getX(){
+    return this.x;
+  }
+  
   float getY(){
     return this.y;
   }
@@ -29,6 +33,9 @@ class Asteroids{
   }
   
   void update(){
+    strokeWeight(5);
+    stroke(0);
+    fill(200);
     circle(this.x,this.y,this.size);
     this.y += 5;
   }

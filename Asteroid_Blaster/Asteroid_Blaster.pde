@@ -53,14 +53,17 @@ PVector myMouse = new PVector(); //creates mouse vector
 float rot = 0, alpha, dalpha, easing = 0.5; //rotation, alpha, dalpha, and easing (controls speed of tracking)
 
 //target
-float[] targetX = new float[150];
-float[] targetY = new float[150];
+int targetArraySize = 500;
+float[] targetX = new float[targetArraySize];
+float[] targetY = new float[targetArraySize];
 float diameter = 50;
 float[] tempHeading = new float[ARRAY_SIZE];
-Asteroids[] target = new Asteroids[150];
+Asteroids[] target = new Asteroids[targetArraySize];
 
 //scoreboard
 int score = 0;
+int collisionCounter = 0; //counts how many times you have been hit by an asteroid
+int[] oneTimeCount = new int[targetArraySize]; //basically an on/off switch for counting collisions
 
 
 //--------------------------------------------------------------------------------------------------------------
@@ -91,6 +94,7 @@ void setup() {
     targetY[n] = -1000-250*n;
     target[n] = new Asteroids(targetX[n], targetY[n], diameter);
   }
+  
 }
 //--------------------------------------------------------------------------------------------------------------
 //Draw
@@ -132,16 +136,16 @@ void draw() {
 
   //asteroid spawner
   for(int n = 0; n < target.length; n++){
-    if(target[n].hit != true){ //if hit == true, the asteroid disappears
-      strokeWeight(5);
-      stroke(0);
-      fill(255);
+    if(target[n].hit != true && target[n].getY() < 75){ //if hit == true, the asteroid disappears
       target[n].update();
     }
   }
   
   //scoreboard
   scoreBoard();
+  
+  //health
+  youTookaHit();
 }
 //--------------------------------------------------------------------------------------------------------------
 
@@ -150,6 +154,51 @@ void scoreBoard(){
   textSize(45);
   fill(229, 142, 46);
   text(score,0,-750);
+}
+
+void youTookaHit(){
+  for(int n = 0; n < target.length; n++){
+    if(target[n].getY() == 0 && oneTimeCount[n] == 0){
+       collisionCounter += 1;
+       oneTimeCount[n] = 1;
+    }
+  }
+  if(collisionCounter == 0){
+    shieldShape(250,0,2);
+    shieldShape(275,0,2);
+    shieldShape(300,0,2);
+  }else if(collisionCounter == 1){
+    shieldShape(250,0,2);
+    shieldShape(275,0,2);
+  }else if(collisionCounter == 2){
+    shieldShape(250,0,2);
+  }else if(collisionCounter > 3){
+    rectMode(CENTER);
+    noStroke();
+    fill(200,0,0);
+    rect(0,-400,700,900);
+    textAlign(CENTER,BOTTOM);
+    textSize(45);
+    fill(0);
+    text("GAME OVER",0,-400);
+  }
+}
+
+void shieldShape(float x, float y, float size){
+  noStroke();
+  fill(255,255,0,155);
+  beginShape();
+    vertex(x,y);
+    vertex(x+5*size,y+1*size);
+    vertex(x+5*size,y+10*size);
+    vertex(x+4*size,y+13*size);
+    vertex(x+2*size,y+15*size);
+    vertex(x,y+16*size);
+    vertex(x-2*size,y+15*size);
+    vertex(x-4*size,y+13*size);
+    vertex(x-5*size,y+10*size);
+    vertex(x-5*size,y+1*size);
+  endShape();
 }
 
 void mousePressed() {
