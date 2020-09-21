@@ -115,10 +115,7 @@ void draw() {
   blaster();
   
   //lasers
-  for (int i = 0; i < laser.length; i++) {
-    stroke(laserCol[i]);
-    laser[i].update();
-  }
+  laser();
   
   //asteroids
   asteroidSpawner();
@@ -181,6 +178,13 @@ void shieldShape(float x, float y, float size){
     vertex(x-5*size,y+10*size);
     vertex(x-5*size,y+1*size);
   endShape();
+}
+
+void laser(){
+  for (int i = 0; i < laser.length; i++) {
+    stroke(laserCol[i]);
+    laser[i].update();
+  }
 }
 
 void asteroidSpawner(){
@@ -270,12 +274,12 @@ void blaster() {
   line(0, -10, 0, 25);
   circle(0, -10, 25);
   //debug mode stuff (shows X and Y axis of blaster)
-  // /*
+  /*
   strokeWeight(1.5);
   stroke(255,0,0);
-  line(-600,0,600,0);
+  line(-1000,0,1000,0);
   line(0,-100,0,1000);
-  // */
+  */
   popMatrix();
 }
 
