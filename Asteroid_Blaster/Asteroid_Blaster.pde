@@ -120,31 +120,8 @@ void draw() {
     laser[i].update();
   }
   
-<<<<<<< HEAD
   //asteroids
   asteroidSpawner();
-=======
-  //target practice (declaring all the stuff here just for testing)
-  for(int i = 0; i < target.length; i++){
-    for(int n = 0; n < laser.length; n++){    
-      //checks if laser Y and asteroid/target y are close to each other, also checks if laser y is less than 800 (to prevent long shots that
-      //trivialise difficulty), and, finally, it checks if the angles of the laser and asteroids from 0,0 are close to each other
-      if(laser[n].getY() > (target[i].getY()+diameter/2)*-1 && laser[n].getY() < (target[i].getY()-diameter/2)*-1 && laser[n].getY() < 800 &&
-        tempHeading[n] <= target[i].asteroidVecHeading()+0.055 && tempHeading[n] >= target[i].asteroidVecHeading()-0.055 && target[i].hit != true)
-      {
-        target[i].hit(true); //makes hit true to despawn the specific asteroids that fulfill the longass if statement above
-        score += 1;
-      }
-    }    
-  } 
-
-  //asteroid spawner
-  for(int n = 0; n < target.length; n++){
-    if(target[n].hit != true && target[n].getY() < 75){ //if hit == true, the asteroid disappears
-      target[n].update();
-    }
-  }
->>>>>>> 386ca80054d1eca1bdd805c9d25439f91037ab5a
   
   //scoreboard
   scoreBoard();
